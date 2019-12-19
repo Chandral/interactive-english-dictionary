@@ -24,5 +24,11 @@ def translate(dictionary_key):
         return negative_response
 
 
-word = input("Enter a word: ")
-print(translate(word))
+word = input("Enter word: ")
+search_result = translate(word)
+
+if type(search_result) == list:
+    for item in search_result:
+        print(item)
+else:
+    print(search_result)
