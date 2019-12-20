@@ -2,33 +2,63 @@ import json
 from difflib import get_close_matches
 
 data = json.load(open("data/data.json"))
+acceptable_replies = ("Y", "YES", "N", "NO")
+negative_response = "Sorry, the word '{}' does not exist in the dictionary."
 
 
-def translate(dictionary_key):
-    negative_response = "The word '{}' does not exist in the dictionary. " \
-                        "Please check your word and then try again, thank you.".format(dictionary_key)
-    dictionary_key_lowercase = dictionary_key.lower()
-
-    if dictionary_key_lowercase in data:
-        return data[dictionary_key_lowercase]
-    elif len(get_close_matches(dictionary_key, data.keys())) > 0:
-        yes_or_no = input("Did you mean '{}'? Type 'Y' for yes or 'N' for no: "
-                          .format(get_close_matches(dictionary_key, data.keys())[0]))
-        if yes_or_no.upper() == 'Y':
-            return data[get_close_matches(dictionary_key, data.keys())[0]]
-        elif yes_or_no.upper() == 'N':
-            return negative_response
-        else:
-            return "Not sure what you meant, please type either 'Y' for yes or 'N' for no"
-    else:
-        return negative_response
+def swap_to_title_case(word):
+    """
+        Converts a word from any case to title case. E.g. 'mumbai' will become 'Mumbai'
+        :param word: S
+        :
+    """
+    return word.lower()[0].upper() + word.lower()[1:]
 
 
-word = input("Enter word: ")
-search_result = translate(word)
+def check_key_exists(key):
+    """
+        Checks if a key exists in the dictionary stored in the global variable above named 'data'.
+        :param key: A dictionary key with string data type.
+        :return:
+    """
+    if key.lower() in data:
+        return key.lower()
+    elif key.upper() in data:
+        return key.upper()
+    elif swap_to_title_case(key) in data:
+        return swap_to_title_case(key)
+
+
+def search_definition(word):
+    """
+        Accepts a word from the user as a parameter and returns the definition of that word if found. E.g. 'mountain',
+        'tree', 'river'
+        :param word:
+        :return
+    """
+    if check_key_exists(word):
+        return data[check_key_exists(word)]
+
+    if len(get_close_matches(word.lower(), data.keys())) > 0:
+        suggested_word = get_close_matches(word.lower(), data.keys())[0]
+        yes_or_no = input("Did you mean '{}'? Please type yes or no: ".format(suggested_word)).upper()
+        num_of_attempts = 2
+        while not(yes_or_no in acceptable_replies) and num_of_attempts > 0:
+            yes_or_no = input("Did you mean '{}'? Please type yes or no: ".format(suggested_word)).upper()
+            num_of_attempts -= 1
+        if yes_or_no == "Y" or yes_or_no == "YES":
+            return data[get_close_matches(word.lower(), data.keys())[0]]
+        elif yes_or_no == "N" or yes_or_no == "NO":
+            return negative_response.format(word)
+        return "Sorry, you've exceeded the number of attempts. Please try again."
+
+    return negative_response.format(word)
+
+
+search_result = search_definition(input("Type your word: "))
 
 if type(search_result) == list:
     for item in search_result:
-        print(item)
+        print(">>> " + item)
 else:
     print(search_result)
