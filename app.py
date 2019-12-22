@@ -9,8 +9,8 @@ negative_response = "Sorry, the word '{}' does not exist in the dictionary."
 def swap_to_title_case(word):
     """
         Converts a word from any case to title case. E.g. 'mumbai' will become 'Mumbai'
-        :param word: S
-        :
+        :param word: A string which is will converted to Title case.
+        :return: A string in Title case
     """
     return word.lower()[0].upper() + word.lower()[1:]
 
@@ -19,7 +19,7 @@ def check_key_exists(key):
     """
         Checks if a key exists in the dictionary stored in the global variable above named 'data'.
         :param key: A dictionary key with string data type.
-        :return:
+        :return: A string in the appropriate case which is found as a key in the dictionary of 'data.json' file
     """
     if key.lower() in data:
         return key.lower()
@@ -33,8 +33,9 @@ def search_definition(word):
     """
         Accepts a word from the user as a parameter and returns the definition of that word if found. E.g. 'mountain',
         'tree', 'river'
-        :param word:
-        :return
+        :param word: A string which will be used as a key for the dictionary
+        :return: The definition of the word searched or else an appropriate message if the word is not found in the
+        dictionary.
     """
     if check_key_exists(word):
         return data[check_key_exists(word)]
