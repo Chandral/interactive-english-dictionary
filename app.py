@@ -56,8 +56,10 @@ def search_definition(word):
     return negative_response.format(word)
 
 
+# Stores the search results. It could be a string or a list
 search_result = search_definition(input("Type your word: "))
 
+# Checks if the search result is a list. If yes, it prints each list item one by one which are definitions of the word
 if type(search_result) == list:
     for item in search_result:
         print(">>> " + item)
